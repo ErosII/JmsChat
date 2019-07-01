@@ -14,13 +14,17 @@ import chat.jms.core.ChatMessage;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.geometry.HPos;
 import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
+import javafx.scene.control.TitledPane;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 
@@ -81,14 +85,30 @@ public class MainPageController {
 	
 	public void consumeMessage (ChatMessage chatMessage) {
 		Platform.runLater(() -> {
-			VBox messageBox = new VBox();
-			Label userLabel = new Label();
-			userLabel.setText(chatMessage.getUser());
-			TextArea messageArea = new TextArea();
+			TextField messageArea = new TextField();
 			messageArea.setText(chatMessage.getMsg());
-			messageBox.getChildren().add(userLabel);
-			messageBox.getChildren().add(messageArea);
-			id_chat_box.getChildren().add(messageBox);
+			messageArea.setPrefHeight(150);
+			messageArea.setAlignment(Pos.TOP_LEFT);
+			messageArea.setEditable(false);
+			TitledPane titledPane = new TitledPane(chatMessage.getUser(), messageArea);
+			titledPane.setMaxWidth(300);
+			titledPane.setMinWidth(300);
+			titledPane.setPrefHeight(150);
+			
+			titledPane.setCollapsible(false);
+			HBox hBox = new HBox();
+			
+			if (chatMessage.getUserId().equals(userId)) {
+				hBox.setAlignment(Pos.TOP_RIGHT);
+				titledPane.setPadding(new Insets(0,20,0,0));
+			}
+
+			else
+				hBox.setAlignment(Pos.TOP_LEFT);
+			
+			hBox.getChildren().add(titledPane);
+						
+			id_chat_box.getChildren().add(hBox);
 
 		});
 
